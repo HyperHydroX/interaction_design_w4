@@ -313,6 +313,44 @@ input::placeholder {
     Horizon with sun visualisation
 */
 
+.c-horizon__line {
+  border-top: 1px solid var(--global-color);
+  padding-top: 8px;
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.c-horizon__sky-wrapper {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  padding-top: 22px;
+  padding-right: 40px;
+}
+
+.c-horizon__sky {
+  position: relative;
+  height: 100%;
+}
+
+.c-horizon__sun {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  transform: translateY(22px);
+}
+
+.c-horizon__sun::before {
+  text-align: center;
+  margin-bottom: 8px;
+  display: block;
+  content: attr(data-time);
+}
+
 /*------------------------------------*\
 #UTILITIES
 \*------------------------------------*/
