@@ -23,8 +23,8 @@
 
 :root {
   /* colors */
-  --global-background-color: aqua;
-  --global-color: black;
+  --global-background-color: #cce7ff;
+  --global-color: #0f3557;
   /* opacity */
 
   /* transitions */
@@ -268,6 +268,9 @@ input::placeholder {
 */
 
 .c-logo {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
 }
 
 /*
@@ -277,9 +280,12 @@ input::placeholder {
 */
 
 .c-sun {
+  height: 24px;
+  color: var(--global-color);
 }
 
 .c-logo .c-sun {
+  margin-right: 8px;
 }
 
 /*
@@ -290,14 +296,17 @@ input::placeholder {
 
 .c-app {
   margin: 0 auto;
-  width: 200px;
+  width: 400px;
   padding-top: 32px;
 }
 
 .c-app__summary {
-    
+  font-size: 24px;
 }
 
+.c-time-left::after {
+  content: " minutes";
+}
 /*
     Component: Horizon
     ---
@@ -312,6 +321,10 @@ input::placeholder {
     Utilities: Mute
     Mute with opacity
 */
+
+.u-muted {
+  opacity: 0.6;
+}
 
 /*------------------------------------*\
 #STATES
