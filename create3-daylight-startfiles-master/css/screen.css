@@ -384,6 +384,7 @@ input::placeholder {
 .is-night {
   --global-background-color: #0f3557;
   --global-color: #cce7ff;
+  transition: all 0.3s ease-out;
 }
 
 /* Night version: just switch the light and dark vars */

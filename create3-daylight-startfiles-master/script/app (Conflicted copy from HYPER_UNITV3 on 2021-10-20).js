@@ -16,13 +16,13 @@ function _parseMillisecondsIntoReadableTime(timestamp) {
 
 const it_be_night = () => {
 	console.log("It is night");
-	document.querySelector("html").classList.add("is-night");
+	document.querySelector("html").document()
 }
 
 // 5 TODO: maak updateSun functie
 const update_sun = (sun, left, bottom ,today) => {
-	sun.style.setProperty("left", `${left}%`);
-	sun.style.setProperty("bottom", `${bottom}%`);
+	sun.style.setProperty("--local-sun-position-left", `${left}%`);
+	sun.style.setProperty("--local-sun-position-bottom", `${bottom}%`);
 
 	sun.setAttribute("data-time", `${today.getHours()}:${today.getMinutes()}`);
 }
@@ -30,51 +30,49 @@ const update_sun = (sun, left, bottom ,today) => {
 // 4 Zet de zon op de juiste plaats en zorg ervoor dat dit iedere minuut gebeurt.
 let placeSunAndStartMoving = (totalMinutes, sunrise) => {
 	// In de functie moeten we eerst wat zaken ophalen en berekenen.
+	console.log(`Total minutes: ${totalMinutes}`);
+	console.log(`Sunrise: ${sunrise * 1000}`);
 	// Haal het DOM element van onze zon op en van onze aantal minuten resterend deze dag.
 	const sun = document.querySelector(".js-sun");
-	let minutes_left = document.querySelector(".js-time-left")
-	console.log(`Sunrise: ${sunrise}`)
+	const minutes_left = document.querySelector(".js-time-left")
 
 	
-	let today = new Date();
+	var today = new Date();
+	console.log(`today time: ${today.getHours()}:${today.getMinutes()}`);
 	const sunrise_date = new Date(sunrise * 1000);
+	console.log(`Sunrise date: ${sunrise_date}`);
 
 	// Bepaal het aantal minuten dat de zon al op is.
-	let sun_uptime = new Date(today.getTime() - sunrise * 1000);
+	console.log(`today.gettime(): ${today.getTime()}`)
+	let sun_uptime = new Date(today.getTime() - sunrise);
 	console.log(`Sun uptime ${sun_uptime}`);
 	let minutes_sun_uptime = sun_uptime.getHours() * 60 + sun_uptime.getMinutes();
 	console.log(`Sun uptime in minutes ${minutes_sun_uptime}`);
 
 	// Nu zetten we de zon op de initiële goede positie ( met de functie updateSun ). Bereken hiervoor hoeveel procent er van de totale zon-tijd al voorbij is.
 	console.log(sun.dataset.time);
-	let percentage = (100 / totalMinutes) * minutes_sun_uptime;
-	let sun_left = percentage;
-	console.log(`sun_left percentage: ${sun_left}`);
-	let sun_bottom = percentage < 50 ? percentage * 2 : (100 - percentage) * 2; //Na middag zakt de zon weer
-	console.log(`sun_bottom percentage: ${sun_bottom}`);
-	
+	const percentage = (100 / totalMinutes) * sun_uptime;
+	const sun_left = percentage;
+	const sun_bottom = percentage < 50 ? percentage * 2 : (100 - percentage) * 2; //Na middag zakt de zon weer
+
 	update_sun(sun, sun_left, sun_bottom, today);
 
 	// We voegen ook de 'is-loaded' class toe aan de body-tag.
 	document.querySelector("body").classList.add("is_loaded");
 
 	// Vergeet niet om het resterende aantal minuten in te vullen.
-	minutes_left.innerHTML = totalMinutes - minutes_sun_uptime;
+	minutes_left.textContent = totalMinutes - minutes_sun_uptime;
 
 	// Nu maken we een functie die de zon elke minuut zal updaten
-	let t = setInterval(() => {
-		today = new Date()
-		console.log(`Minutes left= ${minutes_left }`)
+	const t = setInterval(() => {
+		today = new Date();
+
 		if(minutes_left < 0 || minutes_left > totalMinutes) {
 			clearInterval(t);
-			it_be_night();
 		} else {
-			update_sun(sun, sun_left, sun_bottom, today);
-			minutes_left.innerHTML = totalMinutes - minutes_sun_uptime;
-			console.log(totalMinutes - minutes_sun_uptime);
-			
+
 		}
-	}, 6000); //1000ms = 1s
+	}, 60000); //1000ms = 1s
 
 
 	// Bekijk of de zon niet nog onder of reeds onder is
@@ -90,19 +88,17 @@ const showResult = (queryResponse) => {
 	const location = document.querySelector(".js-location");
 
 	// Zorg dat de juiste locatie weergegeven wordt, volgens wat je uit de API terug krijgt.
-	location.innerHTML = `${queryResponse.city.name}, ${queryResponse.city.country}`;
+	location.textContent = `${queryResponse.city.name}, ${queryResponse.city.country}`;
 	// Toon ook de juiste tijd voor de opkomst van de zon en de zonsondergang
-	sunrise.innerHTML = _parseMillisecondsIntoReadableTime(queryResponse.city.sunrise);
-	sunsset.innerHTML = _parseMillisecondsIntoReadableTime(queryResponse.city.sunset);
+	sunrise.textContent = _parseMillisecondsIntoReadableTime(queryResponse.city.sunrise);
+	sunsset.textContent = _parseMillisecondsIntoReadableTime(queryResponse.city.sunset);
 	
 	// Hier gaan we een functie oproepen die de zon een bepaalde positie kan geven en dit kan updaten.
 	// Geef deze functie de periode tussen sunrise en sunset mee en het tijdstip van sunrise.
 
 	
-	let time_difference = new Date(queryResponse.city.sunset * 1000 - queryResponse.city.sunrise * 1000);
-	console.log(time_difference);
+	const time_difference = new Date(queryResponse.city.sunset * 1000 - queryResponse.city.sunrise * 1000);
 	placeSunAndStartMoving(time_difference.getHours() * 60 + time_difference.getMinutes(), queryResponse.city.sunrise);
-	console.log(time_difference.getHours() * 60 + time_difference.getMinutes(), queryResponse.city.sunrise);
 
 	//ANDERE OPTIE
 	// const time = _parseMillisecondsIntoReadableTime(queryResponse.city.sunrise - queryResponse.city.sunset, queryResponse.city.sunrise)
